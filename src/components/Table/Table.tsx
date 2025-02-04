@@ -23,7 +23,6 @@ export default function UserTasksTable() {
    const [sortOrderCount, setSortOrderCount] = useState<'asc' | 'desc'>('asc');
    const [sortOrderId, setSortOrderId] = useState<'asc' | 'desc'>('asc');
 
-
    useEffect(() => {
       Promise.all([
          fetch("https://jsonplaceholder.typicode.com/users").then((res) => res.json()),
@@ -45,15 +44,18 @@ export default function UserTasksTable() {
    }
 
    const handleSort = (sortByField: 'username' | 'taskCount' | 'userId') => {
-      if (sortByField === 'username') {
-         setSortOrderName(sortOrderName === 'asc' ? 'desc' : 'asc');
-         setSortBy(sortByField);
-      } else if (sortBy === 'taskCount') {
-         setSortBy(sortByField);
-         setSortOrderCount(sortOrderCount === 'asc' ? 'desc' : 'asc');
-      } else {
-         setSortBy(sortByField);
-         setSortOrderId(sortOrderId === 'asc' ? 'desc' : 'asc');
+      switch (sortByField) {
+         case 'username':
+            setSortOrderName(sortOrderName === 'asc' ? 'desc' : 'asc');
+            setSortBy(sortByField);
+            break;
+         case 'taskCount':
+            setSortBy(sortByField);
+            setSortOrderCount(sortOrderCount === 'asc' ? 'desc' : 'asc');
+            break;
+         default:
+            setSortBy(sortByField);
+            setSortOrderId(sortOrderId === 'asc' ? 'desc' : 'asc');
       }
    };
 
@@ -66,22 +68,23 @@ export default function UserTasksTable() {
 
 
    const sortedUserTaskCount = userTaskCount.sort((a, b) => {
-      if (sortBy === 'username') {
-         return sortOrderName === 'asc'
-            ? a.username.localeCompare(b.username)
-            : b.username.localeCompare(a.username);
-      } else if (sortBy === 'taskCount') {
-         return sortOrderCount === 'asc' ? a.taskCount - b.taskCount : b.taskCount - a.taskCount;
-      } else {
-         return sortOrderId === 'asc' ? a.id - b.id : b.id - a.id;
+      switch (sortBy) {
+         case 'username':
+            return sortOrderName === 'asc'
+               ? a.username.localeCompare(b.username)
+               : b.username.localeCompare(a.username);
+         case 'taskCount':
+            return sortOrderCount === 'asc' ? a.taskCount - b.taskCount : b.taskCount - a.taskCount;
+         default:
+            return sortOrderId === 'asc' ? a.id - b.id : b.id - a.id;
       }
    });
 
    return (
-      <div className='mx-[80px] mt-[81px] max-sm:mx-[40px]'>
+      <div className='mx-[80px] max-sm:mx-[40px]'>
          <div className='max-w-[1569px]  mx-auto'>
             <div className='h-screen flex items-stretch justify-stretch flex-col'>
-               <div className='my-16 text-white max-sm:my-10'>
+               <div className='my-16 pt-16 text-white max-sm:my-10'>
                   <h1 className='text-5xl font-[600] max-sm:text-3xl'>User To-Do Table</h1>
                   <p className='text-md my-[16px] text-[#fff]/40 max-sm:text-[12px] max-sm:my-[8px]'>User task table for effective planning.</p>
                </div>
